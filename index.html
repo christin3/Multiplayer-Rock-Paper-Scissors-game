@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!--Added firebase-->
+    <script src="https://www.gstatic.com/firebasejs/3.3.0/firebase.js"></script>
+
+    <!--Added jQuery-->
+    <script src="https://code.jquery.com/jquery-2.2.1.min.js"></script>
+    <!-- Latest compiled and minified CSS -->
+    <!--Added Bootstrap-->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css"
+          integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+            integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+            crossorigin="anonymous"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title></title>
+</head>
+<body>
+
+<div class="container" align="center">
+    <div class="row">
+        <div class="banner" align="center"><img src="banner.jpg" width="600" height="250"></div>
+        <br>
+        <div class="row" align="center">
+
+                <div class="form-group">
+                    <label for="bidderName">Your Name</label>
+                    <input type="text" class="form-control" id="bidderName">
+
+                <button id="submitBid" type="submit" class="btn btn-default">Start!</button>
+        </div>
+
+
+
+                <p>Select your chosen warrior.</p>
+
+            </form>
+        </div>
+
+        <br>
+        <div class="row">
+            <div class=".col-xs-4 .col-xs-4   panel panel-default " id="player1" align="center"><h3>Player 1:
+                <span id="highestBidder"></span></h3>
+
+                <br>
+
+                <button type="button" class="btn btn-primary" id="rock1">Rock</button>
+                <button type="button" class="btn btn-primary" id="paper1">Paper</button>
+                <button type="button" class="btn btn-primary" id="scissors1">Scissors</button>
+                <br><br>
+                <div><span id="score1"></span></div>
+
+
+            </div>
+
+
+            <div class=".col-xs-4 .col-xs-4  panel panel-default game" align="center">
+
+
+                <span id="gameStatus"> And the winner is..</span>
+            </div>
+
+
+            <div class=".col-xs-4 .col-xs-4  panel panel-default " align="center" id="player2"><h3>Player 2
+                <span id="player2Name"></span></h3>
+
+
+                <button type="button" class="btn btn-primary" id="rock2">Rock</button>
+                <button type="button" class="btn btn-primary" id="paper2">Paper</button>
+                <button type="button" class="btn btn-primary" id="scissors2">Scissors</button>
+                <br><br>
+                <div><span id="score2"></span></div>
+
+
+            </div>
+        </div>
+    </div>
+
+    <br>
+    <div class="row" align="center">
+        <div class="form">
+            <div class="panel panel-default" id="textZone">
+                Comment Field
+                <br>
+
+                <br>
+
+                <br>
+
+
+                <input type="text" class="form-control" placeholder="Text Input">
+
+                <button type="submit" id="submit" class="btn btn-default">Submit</button>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+</div>    <!-- Javascript -->
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        var config = {
+            apiKey: "AIzaSyDb_TvUIkT6tlt8SR63KUEudxIxUPM0qYI",
+            authDomain: "rock-paper-scissors-bf211.firebaseapp.com",
+            databaseURL: "https://rock-paper-scissors-bf211.firebaseio.com",
+            storageBucket: "rock-paper-scissors-bf211.appspot.com",
+        };
+        firebase.initializeApp(config);
+
+        var database = firebase.database();
+
+        // Declares the tallies to 0
+        var wins1 = 0;
+        var losses1 = 0;
+        var ties1 = 0;
+
+        var wins2 = 0;
+        var losses2 = 0;
+        var ties2 = 0;
+        var player2;
+        var player1;
+        var player1Name;
+        var player2Name;
+
+        database.ref().on("value", function (snapshot) {
+            if (snapshot.child("player1").exists() && snapshot.child("player2").exists()) {
+                player1 = snapshot.val().player1;
+                player2 = snapshot.val().player2;
+                checkWinner();
+            }
+
+        });
+
+        $("#submitBid").on("click", function () {
+
+            // Get the input values
+            var bidderName = $('#bidderName').val().trim();
+            $('#highestBidder').html(bidderName);
+
+            $("#bidderName").val("");
+
+            // Log the Bidder and Price (Even if not the highest)
+            console.log(bidderName);
+        });
+
+
+        $("#rock1").click(function () {
+            database.ref("player1").set("r");
+
+
+        });
+
+        $("#paper1").click(function () {
+            database.ref("player1").set("p");
+
+        });
+
+        $("#scissors1").click(function () {
+            database.ref("player1").set("s");
+
+        });
+
+        $("#rock2").click(function () {
+            database.ref("player2").set("r");
+
+        });
+
+        $("#paper2").click(function () {
+            database.ref("player2").set("p");
+
+        });
+
+        $("#scissors2").click(function () {
+            database.ref("player2").set("s");
+
+        });
+
+
+        function checkWinner() {
+
+            if (player1 && player2) {
+                if ((player1 == 'r') && (player2 == 's')) {
+
+                    $('#gameStatus').html("Player 1!");
+                    wins1++;
+                    losses2++;
+
+                } else if ((player1 == 'r') && (player2 == 'p')) {
+
+                    $('#gameStatus').html("Player 2!");
+                    losses1++;
+                    wins2++;
+
+                } else if ((player1 == 's') && (player2 == 'r')) {
+
+                    $('#gameStatus').html("Player 2!");
+                    losses1++;
+                    wins2++;
+
+                } else if ((player1 == 's') && (player2 == 'p')) {
+
+                    $('#gameStatus').html("Player 1!");
+                    wins1++;
+                    losses2++;
+
+                } else if ((player1 == 'p') && (player2 == 'r')) {
+
+                    $('#gameStatus').html("Player 1!");
+                    wins1++;
+                    losses2++;
+
+                } else if ((player1 == 'p') && (player2 == 's')) {
+
+                    $('#gameStatus').html("Player 2!");
+                    losses1++;
+                    wins2++;
+
+                } else if (player1 == player2) {
+                    $('#gameStatus').html("It's a Tie!");
+                    ties1++;
+                    ties2++;
+                }
+
+                database.ref("player1").set(null);
+                database.ref("player2").set(null);
+
+                $("#gameStatus").html = ("");
+
+                var player1score =
+
+                        "<p>wins: " + wins1 + " " + "losses: " + losses1 + " " + "ties: " + ties1 + "</p>";
+
+                document.querySelector('#score1').innerHTML = player1score;
+
+
+                var player2score =
+
+                        "<p>wins: " + wins2 + " " + "losses: " + losses2 + " " + "ties: " + ties2 + "</p>";
+
+                document.querySelector('#score2').innerHTML = player2score;
+
+
+            }
+
+
+        }
+    });
+
+
+</script>
+
+</body>
+</html>
+
+<style type="text/css">
+
+
+    .row {
+        width: 600px;
+
+    }
+
+    body {
+
+        background-color: #efece3;
+
+    }
+
+    p {
+        font-size: large;
+    }
+
+    .game {
+        font-size: x-large;
+    }
+
+    #player1 {
+
+    }
+
+    #resultArea {
+
+    }
+
+    #player2 {
+
+    }
+
+    .form-group {
+        width: 33%;
+    }
+
+    #textZone {
+        width: 33%;
+
+    }
+
+    .area {
+
+    }
+
+    #textZone {
+
+    }
+
+
+</style>
