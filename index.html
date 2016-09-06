@@ -29,9 +29,9 @@
         <div class="row" align="center">
 
             <div class="form-group">
-                <label for="bidderName">Your Name</label>
-                <input type="text" class="form-control" id="bidderName">
-
+                <p>Name:</p>
+                <input type="text" class="form-control" id="player1name">
+                <input type="text" class="form-control" id="player2name">
                 <button id="submitBid" type="submit" class="btn btn-default">Start!</button>
             </div>
 
@@ -147,17 +147,17 @@
 
         //player1name and player2name are my ids
         $("#submitBid").on("click", function () {
-            player1name = $('#bidderName').val().trim();
-//            player2name = $('#bidderName').val().trim();
+            player1name = $('#player1name').val().trim();
+            player2name = $('#player2name').val().trim();
 
 
 
             document.querySelector('#playerUno').innerHTML = player1name;
-//            document.querySelector('#playerDos').innerHTML = player2name;
+            document.querySelector('#playerDos').innerHTML = player2name;
 
-            database.ref().set({
+            database.ref('players').set({
                player1 : player1name,
-//                player2:player2name
+                player2:player2name
             })
 
         });
@@ -242,6 +242,7 @@
 
                 database.ref("player1").set(null);
                 database.ref("player2").set(null);
+                database.ref("players").set(null);
 
                 $("#gameStatus").html = ("");
 
