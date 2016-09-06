@@ -28,25 +28,25 @@
         <br>
         <div class="row" align="center">
 
-                <div class="form-group">
-                    <label for="bidderName">Your Name</label>
-                    <input type="text" class="form-control" id="bidderName">
+            <div class="form-group">
+                <label for="bidderName">Your Name</label>
+                <input type="text" class="form-control" id="bidderName">
 
                 <button id="submitBid" type="submit" class="btn btn-default">Start!</button>
-        </div>
+            </div>
 
 
-
-                <p>Select your chosen warrior.</p>
+            <p>Select your chosen warrior.</p>
 
             </form>
         </div>
 
         <br>
         <div class="row">
-            <div class=".col-xs-4 .col-xs-4   panel panel-default " id="player1" align="center"><h3>Player 1:
-                <span id="highestBidder"></span></h3>
-
+            <div class=".col-xs-4 .col-xs-4   panel panel-default " id="player1" align="center">
+                <h3>Player 1:
+                   <span id="playerUno"></span>
+                </h3>
                 <br>
 
                 <button type="button" class="btn btn-primary" id="rock1">Rock</button>
@@ -66,8 +66,10 @@
             </div>
 
 
-            <div class=".col-xs-4 .col-xs-4  panel panel-default " align="center" id="player2"><h3>Player 2
-                <span id="player2Name"></span></h3>
+            <div class=".col-xs-4 .col-xs-4  panel panel-default " align="center" id="player2">
+                <h3>Player 2:
+                    <span id="playerDos"></span>
+                </h3>
 
 
                 <button type="button" class="btn btn-primary" id="rock2">Rock</button>
@@ -128,10 +130,13 @@
         var ties2 = 0;
         var player2;
         var player1;
-        var player1Name;
-        var player2Name;
+        var player1name;
+        var player2name;
 
-        database.ref().on("value", function (snapshot) {
+
+
+
+        database.ref('players').on("value", function (snapshot) {
             if (snapshot.child("player1").exists() && snapshot.child("player2").exists()) {
                 player1 = snapshot.val().player1;
                 player2 = snapshot.val().player2;
@@ -140,16 +145,21 @@
 
         });
 
+        //player1name and player2name are my ids
         $("#submitBid").on("click", function () {
+            player1name = $('#bidderName').val().trim();
+//            player2name = $('#bidderName').val().trim();
 
-            // Get the input values
-            var bidderName = $('#bidderName').val().trim();
-            $('#highestBidder').html(bidderName);
 
-            $("#bidderName").val("");
 
-            // Log the Bidder and Price (Even if not the highest)
-            console.log(bidderName);
+            document.querySelector('#playerUno').innerHTML = player1name;
+//            document.querySelector('#playerDos').innerHTML = player2name;
+
+            database.ref().set({
+               player1 : player1name,
+//                player2:player2name
+            })
+
         });
 
 
