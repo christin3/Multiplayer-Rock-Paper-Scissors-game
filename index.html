@@ -108,7 +108,7 @@
 </div>    <!-- Javascript -->
 <script type="text/javascript">
 
-    $(document).ready(function () {
+
 
         var config = {
             apiKey: "AIzaSyDb_TvUIkT6tlt8SR63KUEudxIxUPM0qYI",
@@ -134,103 +134,106 @@
         var player2name;
 
 
+        $("#submitBid").on("click", function () {
+            player1name = $('#player1name').val().trim();
+            player2name = $('#player2name').val().trim();
+
+            document.querySelector('#playerUno').innerHTML = player1name;
+            document.querySelector('#playerDos').innerHTML = player2name;
+
+            database.ref('player1').set({
+                name:player1name
+            });
+
+            database.ref('player2').set({
+                name:player2name
+            });
+
+        });
 
 
-        database.ref('players').on("value", function (snapshot) {
+
+        database.ref().on("value", function (snapshot) {
             if (snapshot.child("player1").exists() && snapshot.child("player2").exists()) {
                 player1 = snapshot.val().player1;
                 player2 = snapshot.val().player2;
+
                 checkWinner();
             }
 
         });
 
-        //player1name and player2name are my ids
-        $("#submitBid").on("click", function () {
-            player1name = $('#player1name').val().trim();
-            player2name = $('#player2name').val().trim();
 
-
-
-            document.querySelector('#playerUno').innerHTML = player1name;
-            document.querySelector('#playerDos').innerHTML = player2name;
-
-            database.ref('players').set({
-               player1 : player1name,
-                player2:player2name
-            })
-
-        });
+//Setting my onclick functions to rps
 
 
         $("#rock1").click(function () {
-            database.ref("player1").set("r");
-
+            database.ref("player1").child("selection").set("r");
 
         });
 
         $("#paper1").click(function () {
-            database.ref("player1").set("p");
+            database.ref("player1").child("selection").set("p");
 
         });
 
         $("#scissors1").click(function () {
-            database.ref("player1").set("s");
+            database.ref("player1").child("selection").set("s");
 
         });
 
         $("#rock2").click(function () {
-            database.ref("player2").set("r");
+            database.ref("player2").child("selection").set("r");
 
         });
 
         $("#paper2").click(function () {
-            database.ref("player2").set("p");
+            database.ref("player2").child("selection").set("p");
 
         });
 
         $("#scissors2").click(function () {
-            database.ref("player2").set("s");
+            database.ref("player2").child("selection").set("s");
 
         });
 
 
         function checkWinner() {
 
-            if (player1 && player2) {
+            if (player1 && player2 ) {
                 if ((player1 == 'r') && (player2 == 's')) {
 
-                    $('#gameStatus').html("Player 1!");
+                    $('#gameStatus').html("Player 1 wins!");
                     wins1++;
                     losses2++;
 
                 } else if ((player1 == 'r') && (player2 == 'p')) {
 
-                    $('#gameStatus').html("Player 2!");
+                    $('#gameStatus').html("Player 2 wins!");
                     losses1++;
                     wins2++;
 
                 } else if ((player1 == 's') && (player2 == 'r')) {
 
-                    $('#gameStatus').html("Player 2!");
+                    $('#gameStatus').html("Player 2 wins!");
                     losses1++;
                     wins2++;
 
                 } else if ((player1 == 's') && (player2 == 'p')) {
 
-                    $('#gameStatus').html("Player 1!");
+                    $('#gameStatus').html("Player 1 wins!");
                     wins1++;
                     losses2++;
 
                 } else if ((player1 == 'p') && (player2 == 'r')) {
 
-                    $('#gameStatus').html("Player 1!");
+                    $('#gameStatus').html("Player 1 wins !");
                     wins1++;
                     losses2++;
 
                 } else if ((player1 == 'p') && (player2 == 's')) {
 
-                    $('#gameStatus').html("Player 2!");
+                    $('#gameStatus').html("Player 2 wins!");
                     losses1++;
                     wins2++;
 
@@ -240,11 +243,11 @@
                     ties2++;
                 }
 
-                database.ref("player1").set(null);
-                database.ref("player2").set(null);
-                database.ref("players").set(null);
+                database.ref("player1").child("selection").set(null);
+                database.ref("player2").child("selection").set(null);
+                //database.ref("players").set(null);
 
-                $("#gameStatus").html = ("");
+
 
                 var player1score =
 
@@ -264,7 +267,7 @@
 
 
         }
-    });
+
 
 
 </script>
