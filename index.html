@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <!--Added firebase-->
-    <script src="https://www.gstatic.com/firebasejs/3.3.0/firebase.js"></script>
 
-    <!--Added jQuery-->
+    <script src="https://www.gstatic.com/firebasejs/3.3.0/firebase.js"></script>
     <script src="https://code.jquery.com/jquery-2.2.1.min.js"></script>
+
+
     <!-- Latest compiled and minified CSS -->
     <!--Added Bootstrap-->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
@@ -18,6 +18,11 @@
             integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
             crossorigin="anonymous"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+    <link href="style.css" rel="stylesheet">
+
+
     <title></title>
 </head>
 <body>
@@ -89,16 +94,11 @@
     <div class="row" align="center">
         <form>
             <div class="panel panel-default" id="textZone">
-                Comment Field
-                <br>
-
-                <br>
-
-                <br>
+                <div><span id="player1Comment"></span></div>
+                <div><span id="player2Comment"></span></div>
 
                 <input type="text" class="form-control" placeholder="Text Input">
-
-                <button type="submit" id="submit" class="btn btn-default">Submit</button>
+                <button type="submit" id="submitComment" class="btn btn-default">Submit</button>
 
             </div>
         </form>
@@ -107,242 +107,8 @@
 
 
 <!--</div>   -->
-<!--Javascript -->
-<script type="text/javascript">
 
-
-    var config = {
-        apiKey: "AIzaSyDb_TvUIkT6tlt8SR63KUEudxIxUPM0qYI",
-        authDomain: "rock-paper-scissors-bf211.firebaseapp.com",
-        databaseURL: "https://rock-paper-scissors-bf211.firebaseio.com",
-        storageBucket: "rock-paper-scissors-bf211.appspot.com",
-    };
-    firebase.initializeApp(config);
-
-    var database = firebase.database();
-
-    // Declares the tallies to 0
-    var wins1 = 0;
-    var losses1 = 0;
-    var ties1 = 0;
-
-    var wins2 = 0;
-    var losses2 = 0;
-    var ties2 = 0;
-    var player2;
-    var player1;
-    var player1name;
-    var player2name;
-
-    database.ref().on("value", function (snapshot) {
-        if (snapshot.child("player1").exists() && snapshot.child("player2").exists()) {
-            player1 = snapshot.val().player1.selection;
-            player2 = snapshot.val().player2.selection;
-            checkWinner();
-        }
-
-    });
-
-
-    $("#submitBid").on("click", function () {
-        player1name = $('#player1name').val().trim();
-        player2name = $('#player2name').val().trim();
-
-        document.querySelector('#playerUno').innerHTML = player1name;
-        document.querySelector('#playerDos').innerHTML = player2name;
-        document.getElementById("myForm").reset();
-
-
-
-        database.ref('player1').set({
-            name: player1name,
-
-        });
-
-        database.ref('player2').set({
-            name: player2name,
-
-        });
-
-        return false;
-    });
-
-
-    $("#rock1").click(function () {
-
-        $('#chosenOne').html(", you have chosen Rock");
-        database.ref("player1").child("selection").set("r");
-
-    });
-
-    $("#paper1").click(function () {
-
-        $('#chosenOne').html(", you have chosen Paper");
-        database.ref("player1").child("selection").set("p");
-
-    });
-
-    $("#scissors1").click(function () {
-        $('#chosenOne').html(", you have chosen Scissors");
-        database.ref("player1").child("selection").set("s");
-
-    });
-
-    $("#rock2").click(function () {
-        $('#chosentwo').html(", you have chosen Rock");
-        database.ref("player2").child("selection").set("r");
-
-    });
-
-    $("#paper2").click(function () {
-        $('#chosentwo').html(", you have chosen Paper");
-        database.ref("player2").child("selection").set("p");
-
-    });
-
-    $("#scissors2").click(function () {
-        $('#chosentwo').html(", you have chosen Scissors");
-        database.ref("player2").child("selection").set("s");
-
-    });
-
-
-    function checkWinner() {
-        console.log(player1 + player2);
-
-        if (player1 && player2) {
-            if ((player1 == 'r') && (player2 == 's')) {
-
-
-                $('#gameStatus').html(player1name + " wins with Rock!");
-
-
-                wins1++;
-                losses2++;
-
-            } else if ((player1 == 'r') && (player2 == 'p')) {
-
-                $('#gameStatus').html(player2name + " wins with Paper!");
-
-                losses1++;
-                wins2++;
-
-            } else if ((player1 == 's') && (player2 == 'r')) {
-
-                $('#gameStatus').html(player2name + " wins with Rock!");
-
-                losses1++;
-                wins2++;
-
-            } else if ((player1 == 's') && (player2 == 'p')) {
-
-                $('#gameStatus').html(player1name + " wins with Scissors!");
-
-                wins1++;
-                losses2++;
-
-            } else if ((player1 == 'p') && (player2 == 'r')) {
-
-                $('#gameStatus').html(player1name + " wins with Paper!");
-
-                wins1++;
-                losses2++;
-
-            } else if ((player1 == 'p') && (player2 == 's')) {
-
-                $('#gameStatus').html(player2name + " wins with Scissors!");
-
-                losses1++;
-                wins2++;
-
-            } else if (player1 == player2) {
-                $('#gameStatus').html("It's a Tie!");
-
-                ties1++;
-                ties2++;
-            }
-
-            database.ref("player1").child("selection").set(null);
-            database.ref("player2").child("selection").set(null);
-            $('#chosenOne').html("");
-            $('#chosentwo').html("");
-
-
-            var player1score =
-
-                    "<p>wins: " + wins1 + " " + "losses: " + losses1 + " " + "ties: " + ties1 + "</p>";
-
-            document.querySelector('#score1').innerHTML = player1score;
-
-
-            var player2score =
-
-                    "<p>wins: " + wins2 + " " + "losses: " + losses2 + " " + "ties: " + ties2 + "</p>";
-
-            document.querySelector('#score2').innerHTML = player2score;
-
-
-        }
-
-
-    }
-
-
-</script>
-
+<script src="logic.js" rel="javascript"></script>
 </body>
 </html>
 
-<style type="text/css">
-
-
-    .row {
-        width: 600px;
-
-    }
-
-    body {
-
-        background-color: #efece3;
-
-    }
-
-    p {
-        font-size: large;
-    }
-
-    .game {
-        font-size: x-large;
-    }
-
-    #player1 {
-
-    }
-
-    #resultArea {
-
-    }
-
-    #player2 {
-
-    }
-
-    .form-group {
-        width: 33%;
-    }
-
-    #textZone {
-        width: 33%;
-
-    }
-
-    .area {
-
-    }
-
-    #textZone {
-
-    }
-
-
-</style>

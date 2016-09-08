@@ -1,0 +1,48 @@
+.row {
+    width: 600px;
+
+}
+
+body {
+
+    background-color: #efece3;
+
+}
+
+p {
+    font-size: large;
+}
+
+.game {
+    font-size: x-large;
+}
+
+#player1 {
+
+}
+
+#resultArea {
+
+}
+
+#player2 {
+
+}
+
+.form-group {
+    width: 33%;
+}
+
+#textZone {
+    width: 33%;
+
+}
+
+.area {
+
+}
+
+#textZone {
+
+}
+
