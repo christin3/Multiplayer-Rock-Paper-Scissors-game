@@ -29,15 +29,15 @@
         <div class="row" align="center">
 
             <form id="myForm">
-                <p>A Ruler Shall Have  Name: </p>
+                <p>A Ruler Shall Have Name: </p>
                 <input type="text" class="form-control" id="player1name" placeholder="Ruler 1 ">
                 <input type="text" class="form-control" id="player2name" placeholder="Ruler 2 ">
                 <button id="submitBid" type="submit" class="btn btn-default">Start!</button>
             </form>
             <br>
             <div id="chosenWarrior">
-            <h2>Select your chosen warrior.</h2>
-        </div>
+                <h2>Select your chosen warrior.</h2>
+            </div>
             </form>
         </div>
 
@@ -86,27 +86,28 @@
     </div>
 
     <br>
-    <!--<div class="row" align="center">-->
-        <!--<form>-->
-            <!--<div class="panel panel-default" id="textZone">-->
-                <!--Comment Field-->
-                <!--<br>-->
+    <div class="row" align="center">
+        <form>
+            <div class="panel panel-default" id="textZone">
+                Comment Field
+                <br>
 
-                <!--<br>-->
+                <br>
 
-                <!--<br>-->
+                <br>
 
-                <!--<input type="text" class="form-control" placeholder="Text Input">-->
+                <input type="text" class="form-control" placeholder="Text Input">
 
-                <!--<button type="submit" id="submit" class="btn btn-default">Submit</button>-->
+                <button type="submit" id="submit" class="btn btn-default">Submit</button>
 
-            <!--</div>-->
-        <!--</form>-->
-    <!--</div>-->
+            </div>
+        </form>
+    </div>
 </div>
 
 
-</div>    <!-- Javascript -->
+<!--</div>   -->
+<!--Javascript -->
 <script type="text/javascript">
 
 
@@ -135,8 +136,8 @@
 
     database.ref().on("value", function (snapshot) {
         if (snapshot.child("player1").exists() && snapshot.child("player2").exists()) {
-            player1 = snapshot.val().player1;
-            player2 = snapshot.val().player2;
+            player1 = snapshot.val().player1.selection;
+            player2 = snapshot.val().player2.selection;
             checkWinner();
         }
 
@@ -149,82 +150,71 @@
 
         document.querySelector('#playerUno').innerHTML = player1name;
         document.querySelector('#playerDos').innerHTML = player2name;
-
         document.getElementById("myForm").reset();
 
-//        database.ref().set({
-//            player1: player1,
-//            player2: player2
-//
-//    });
-//
-//        database.ref('player1').set({
-//            name: player1name,
-//            player1: player1
-//        });
-//
-//        database.ref('player2').set({
-//            name: player2name,
-//            player2: player2
-//        });
-    return false;
+
+
+        database.ref('player1').set({
+            name: player1name,
+
+        });
+
+        database.ref('player2').set({
+            name: player2name,
+
+        });
+
+        return false;
     });
 
 
     $("#rock1").click(function () {
 
         $('#chosenOne').html(", you have chosen Rock");
-        database.ref("player1").set("r");
-
-        // database.ref("player1").child("selection").set("r");
+        database.ref("player1").child("selection").set("r");
 
     });
 
     $("#paper1").click(function () {
 
         $('#chosenOne').html(", you have chosen Paper");
-        database.ref("player1").set("p");
-        //database.ref("player1").child("selection").set("p");
+        database.ref("player1").child("selection").set("p");
 
     });
 
     $("#scissors1").click(function () {
         $('#chosenOne').html(", you have chosen Scissors");
-        database.ref("player1").set("s");
-        //database.ref("player1").child("selection").set("s");
+        database.ref("player1").child("selection").set("s");
 
     });
 
     $("#rock2").click(function () {
         $('#chosentwo').html(", you have chosen Rock");
-        database.ref("player2").set("r");
-        //database.ref("player2").child("selection").set("r");
+        database.ref("player2").child("selection").set("r");
 
     });
 
     $("#paper2").click(function () {
         $('#chosentwo').html(", you have chosen Paper");
-        database.ref("player2").set("p");
-        //database.ref("player2").child("selection").set("p");
+        database.ref("player2").child("selection").set("p");
 
     });
 
     $("#scissors2").click(function () {
         $('#chosentwo').html(", you have chosen Scissors");
-        database.ref("player2").set("s");
-        //database.ref("player2").child("selection").set("s");
+        database.ref("player2").child("selection").set("s");
 
     });
 
 
     function checkWinner() {
+        console.log(player1 + player2);
 
         if (player1 && player2) {
             if ((player1 == 'r') && (player2 == 's')) {
 
 
-
-                $('#gameStatus').html(player1name+" wins with Rock!");
+                $('#gameStatus').html(player1name + " wins with Rock!");
 
 
                 wins1++;
@@ -232,35 +222,35 @@
 
             } else if ((player1 == 'r') && (player2 == 'p')) {
 
-                $('#gameStatus').html(player2name+" wins with Paper!");
+                $('#gameStatus').html(player2name + " wins with Paper!");
 
                 losses1++;
                 wins2++;
 
             } else if ((player1 == 's') && (player2 == 'r')) {
 
-                $('#gameStatus').html(player2name+" wins with Rock!");
+                $('#gameStatus').html(player2name + " wins with Rock!");
 
                 losses1++;
                 wins2++;
 
             } else if ((player1 == 's') && (player2 == 'p')) {
 
-                $('#gameStatus').html(player1name+" wins with Scissors!");
+                $('#gameStatus').html(player1name + " wins with Scissors!");
 
                 wins1++;
                 losses2++;
 
             } else if ((player1 == 'p') && (player2 == 'r')) {
 
-                $('#gameStatus').html(player1name+" wins with Paper!");
+                $('#gameStatus').html(player1name + " wins with Paper!");
 
                 wins1++;
                 losses2++;
 
             } else if ((player1 == 'p') && (player2 == 's')) {
 
-                $('#gameStatus').html(player2name+" wins with Scissors!");
+                $('#gameStatus').html(player2name + " wins with Scissors!");
 
                 losses1++;
                 wins2++;
@@ -272,13 +262,10 @@
                 ties2++;
             }
 
-//            database.ref("player1").child("selection").set(null);
-//            database.ref("player2").child("selection").set(null);
-            database.ref("player1").set(null);
-            database.ref("player2").set(null);
+            database.ref("player1").child("selection").set(null);
+            database.ref("player2").child("selection").set(null);
             $('#chosenOne').html("");
             $('#chosentwo').html("");
-
 
 
             var player1score =
@@ -296,10 +283,6 @@
 
 
         }
-
-
-
-
 
 
     }
@@ -360,8 +343,6 @@
     #textZone {
 
     }
-
-
 
 
 </style>
