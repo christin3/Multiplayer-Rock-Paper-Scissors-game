@@ -1,9 +1,9 @@
 
 var config = {
-    apiKey: "AIzaSyDb_TvUIkT6tlt8SR63KUEudxIxUPM0qYI",
-    authDomain: "rock-paper-scissors-bf211.firebaseapp.com",
-    databaseURL: "https://rock-paper-scissors-bf211.firebaseio.com",
-    storageBucket: "rock-paper-scissors-bf211.appspot.com",
+    apiKey: "",
+    authDomain: "",
+    databaseURL: "",
+    storageBucket: "",
 };
 firebase.initializeApp(config);
 
